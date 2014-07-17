@@ -63,23 +63,12 @@ module.exports = function(RED) {
                     //console.log(result["data"][0]["channels"]);
                     //var name = ''+result["data"][0]["channels"];
                     //console.log(name);
-                    //if(name.indexOf("temperature") > -1) {
-                        var value = result["data"][0]["channels"][node.channel]['current-value'];
-                        var lastUpdate = result["data"][0]["lastUpdate"];
-                        var msg = {};
-                        msg.payload = value;
-                        msg.lastUpdate = lastUpdate;
-                        node.send(msg);
-                   // }
-                   // else {
-                   //     var msg = {};
-                   //     msg.payload = "no channel with that name found!";
-                   //     node.send(msg);
-                   //}
-
-                    
-
-                    
+                    var value = result["data"][0]["channels"][node.channel]['current-value'];
+                    var lastUpdate = result["data"][0]["lastUpdate"];
+                    var msg = {};
+                    msg.payload = value;
+                    msg.lastUpdate = lastUpdate;
+                    node.send(msg);
                 });
             });
 
