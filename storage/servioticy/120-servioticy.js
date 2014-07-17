@@ -111,7 +111,14 @@ module.exports = function(RED) {
 
         this.on("input", function(msg){
             var sensor_value = msg.payload;
-            var post_data = "{\"channels\": {\""+this.channel+"\": {\"current-value\": \""+sensor_value+"\"}},\"lastUpdate\": "+ Math.round(new Date().getTime() / 1000) +"}";
+            var post_data = {
+                'channels': {},
+                'lastUpdate': Math.round(new Date().getTime() / 1000)
+            };
+            post_data['channels'][this.channel] = {};
+            post_data['channels'][this.channel]['current-value'] = sensor_value;
+            post_data = JSON.stringify(post_data);
+            // console.log(post_data);
 
             var post_options = {
                 host: 'api.servioticy.com',
