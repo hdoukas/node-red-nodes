@@ -35,14 +35,16 @@ module.exports = function(RED) {
         else { this.error("No auth token set for input node"); }
 
         //get parameters from user
+        this.host = n.host;
+        this.port = n.port;
         this.soid = n.soid;
         this.stream = n.stream;
         this.channel = n.channel;
 
         this.on("input", function(msg){
             var post_options = {
-                host: 'api.servioticy.com',
-                port: '80',
+                host: this.host,
+                port: this.port,
                 path: '/'+this.soid+'/streams/'+this.stream+'/lastUpdate',
                 method: 'GET',
                 headers: {
@@ -94,6 +96,8 @@ module.exports = function(RED) {
         else { this.error("No auth token set for input node"); }
 
         //get parameters from user
+        this.host = n.host;
+        this.port = n.port;
         this.soid = n.soid;
         this.stream = n.stream;
         this.channel = n.channel;
@@ -110,8 +114,8 @@ module.exports = function(RED) {
             // console.log(post_data);
 
             var post_options = {
-                host: 'api.servioticy.com',
-                port: '80',
+                host: this.host,
+                port: this.port,
                 path: '/'+this.soid+'/streams/'+this.stream,
                 method: 'PUT',
                 headers: {

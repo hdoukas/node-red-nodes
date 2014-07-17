@@ -18,6 +18,14 @@
 
 <script type="text/x-red" data-template-name="servioticy in">
   <div class="form-row">
+     <label for="node-input-host"><i class="icon-random"></i> Host</label>
+     <input type="text" id="node-input-host" placeholder="Host">
+  </div>
+  <div class="form-row">
+     <label for="node-input-port"><i class="icon-random"></i> Port</label>
+     <input type="text" id="node-input-port" placeholder="Port">
+  </div>
+  <div class="form-row">
      <label for="node-input-soid"><i class="icon-random"></i> SOId</label>
      <input type="text" id="node-input-soid" placeholder="SOId">
   </div>
@@ -52,9 +60,11 @@
         color:"#A9D0F5",
         defaults: { // defines the editable properties of the node
             name: {value:""}, // along with default values.
+            host: {value:"api.servioticy.com", required:true},
+            port: {value:"80", required:true},
             channel: {value:"", required:true},
-            stream: {value:"", required:true},
-            soid: {value:"", required:true}
+            soid: {value:"", required:true},
+            stream: {value:"", required:true}
         },
         inputs:1, // set the number of inputs - only 0 or 1
         outputs:1, // set the number of outputs - 0 to n
@@ -95,6 +105,14 @@
 
 <script type="text/x-red" data-template-name="servioticy out">
   <div class="form-row">
+     <label for="node-input-host"><i class="icon-random"></i> Host</label>
+     <input type="text" id="node-input-host" placeholder="Host">
+  </div>
+  <div class="form-row">
+     <label for="node-input-port"><i class="icon-random"></i> Port</label>
+     <input type="text" id="node-input-port" placeholder="Port">
+  </div>
+  <div class="form-row">
      <label for="node-input-soid"><i class="icon-random"></i> SOId</label>
      <input type="text" id="node-input-soid" placeholder="SOId">
   </div>
@@ -129,9 +147,11 @@
         color:"#A9D0F5",
         defaults: { // defines the editable properties of the node
             name: {value:""}, // along with default values.
+            host: {value:"api.servioticy.com", required:true},
+            port: {value:"80", required:true},
+            soid: {value:"", required:true},
             channel: {value:"", required:true},
-            stream: {value:"", required:true},
-            soid: {value:"", required:true}
+            stream: {value:"", required:true}
         },
         inputs:1, // set the number of inputs - only 0 or 1
         outputs:1, // set the number of outputs - 0 to n
