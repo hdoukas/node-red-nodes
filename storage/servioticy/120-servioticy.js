@@ -35,14 +35,16 @@ module.exports = function(RED) {
         else { this.error("No auth token set for input node"); }
 
         //get parameters from user
+        this.host = n.host;
+        this.port = n.port;
         this.soid = n.soid;
         this.stream = n.stream;
         this.channel = n.channel;
 
         this.on("input", function(msg){
             var post_options = {
-                host: 'api.servioticy.com',
-                port: '80',
+                host: this.host,
+                port: this.port,
                 path: '/'+this.soid+'/streams/'+this.stream+'/lastUpdate',
                 method: 'GET',
                 headers: {
@@ -63,23 +65,12 @@ module.exports = function(RED) {
                     //console.log(result["data"][0]["channels"]);
                     //var name = ''+result["data"][0]["channels"];
                     //console.log(name);
-                    //if(name.indexOf("temperature") > -1) {
-                        var value = result["data"][0]["channels"][node.channel]['current-value'];
-                        var lastUpdate = result["data"][0]["lastUpdate"];
-                        var msg = {};
-                        msg.payload = value;
-                        msg.lastUpdate = lastUpdate;
-                        node.send(msg);
-                   // }
-                   // else {
-                   //     var msg = {};
-                   //     msg.payload = "no channel with that name found!";
-                   //     node.send(msg);
-                   //}
-
-                    
-
-                    
+                    var value = result["data"][0]["channels"][node.channel]['current-value'];
+                    var lastUpdate = result["data"][0]["lastUpdate"];
+                    var msg = {};
+                    msg.payload = value;
+                    msg.lastUpdate = lastUpdate;
+                    node.send(msg);
                 });
             });
 
@@ -105,17 +96,26 @@ module.exports = function(RED) {
         else { this.error("No auth token set for input node"); }
 
         //get parameters from user
+        this.host = n.host;
+        this.port = n.port;
         this.soid = n.soid;
         this.stream = n.stream;
         this.channel = n.channel;
 
         this.on("input", function(msg){
             var sensor_value = msg.payload;
-            var post_data = "{\"channels\": {\""+this.channel+"\": {\"current-value\": \""+sensor_value+"\"}},\"lastUpdate\": "+new Date().getTime()+"}";
+            var post_data = {
+                'channels': {},
+                'lastUpdate': Math.round(new Date().getTime() / 1000)
+            };
+            post_data['channels'][this.channel] = {};
+            post_data['channels'][this.channel]['current-value'] = sensor_value;
+            post_data = JSON.stringify(post_data);
+            // console.log(post_data);
 
             var post_options = {
-                host: 'api.servioticy.com',
-                port: '80',
+                host: this.host,
+                port: this.port,
                 path: '/'+this.soid+'/streams/'+this.stream,
                 method: 'PUT',
                 headers: {
