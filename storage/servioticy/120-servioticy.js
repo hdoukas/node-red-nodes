@@ -101,8 +101,19 @@ module.exports = function(RED) {
         this.soid = n.soid;
         this.stream = n.stream;
         this.channel = n.channel;
-
+        
         this.on("input", function(msg){
+            // inherit ServIoTicy options from messages
+            if (this.soid == "" && typeof(msg.soid) == "string") {
+                this.soid = msg.soid;
+            }
+            if (this.stream == "" && typeof(msg.stream) == "string") {
+                this.stream = msg.stream;
+            }
+            if (this.channel == "" && typeof(msg.channel) == "string") {
+                this.channel = msg.channel;
+            }
+
             var sensor_value = msg.payload;
             var post_data = {
                 'channels': {},
