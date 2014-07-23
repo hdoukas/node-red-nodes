@@ -51,6 +51,10 @@
 <!-- Next, some simple help text is provided for the node. -->
 <script type="text/x-red" data-help-name="servioticy in">
     <p>ServIoTicy input mode. Use this node to read sensor values from a servIoTicy Smart Object (SO). You need a valid Authentication Token and a SO id. Get started <a href="http://www.gluethings.com/platform/smart-object-manager/">here</a>.</p>
+    <p>The <em>SOId</em>, <em>Channel</em> and <em>Stream</em> parameters can
+     also be assigned dynamically by leaving them empty in the configuration form
+     and providing apposite <em>soid</em>, <em>channel</em> and/or
+     <em>stream</em> parameters on <em>msg</em>.</p>
 </script>
 
 <!-- Finally, the node type is registered along with all of its properties -->
@@ -62,9 +66,9 @@
             name: {value:""}, // along with default values.
             host: {value:"api.servioticy.com", required:true},
             port: {value:"80", required:true},
-            channel: {value:"", required:true},
-            soid: {value:"", required:true},
-            stream: {value:"", required:true}
+            soid: {value:""},
+            channel: {value:""},
+            stream: {value:""}
         },
         inputs:1, // set the number of inputs - only 0 or 1
         outputs:1, // set the number of outputs - 0 to n
