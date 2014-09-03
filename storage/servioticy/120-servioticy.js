@@ -1,22 +1,18 @@
 /**
-* pusher.js
-* Subscription module for the Pusher service (www.pusher.com)
-* Requires 'pusher' and 'pusher-client' modules.
-*
-* Copyright 2014 Charalampos Doukas, @BuildingIoT
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-**/
+ * Copyright 2014 Charalampos Doukas, @BuildingIoT
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
 module.exports = function(RED) {
     "use strict";
 
@@ -125,10 +121,18 @@ module.exports = function(RED) {
                 this.channel = msg.channel;
             }
 
+            // inherit "lastUpdate" from msg if present
+            var lastUpdate;
+            if (typeof(msg.lastUpdate) != "undefined") {
+                lastUpdate = msg.lastUpdate;
+            } else {
+                lastUpdate = Math.round(new Date().getTime() / 1000);
+            }
+
             var sensor_value = msg.payload;
             var post_data = {
                 'channels': {},
-                'lastUpdate': Math.round(new Date().getTime() / 1000)
+                'lastUpdate': lastUpdate
             };
             post_data['channels'][this.channel] = {};
             post_data['channels'][this.channel]['current-value'] = sensor_value;

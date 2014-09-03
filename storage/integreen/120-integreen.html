@@ -1,0 +1,106 @@
+<!--
+  Copyright 2014 Matthias Dieter Wallnöfer, TIS innovation park,
+                                            Bolzano/Bozen - Italy
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!-- Sample html file that corresponds to the 99-sample.js file              -->
+<!-- This creates and configures the onscreen elements of the node           -->
+
+<!-- If you use this as a template, replace IBM Corp. with your own name.    -->
+
+<!-- First, the content of the edit dialog is defined.                       -->
+
+<script type="text/x-red" data-template-name="integreen in">
+   <!-- data-template-name identifies the node type this is for              -->
+
+   <!-- Each of the following divs creates a field in the edit dialog.       -->
+   <!-- Generally, there should be an input for each property of the node.   -->
+   <!-- The for and id attributes identify the corresponding property        -->
+   <!-- (with the 'node-input-' prefix).                                     -->
+   <!-- The available icon classes are defined Twitter Bootstrap glyphicons  -->
+    <div class="form-row">
+        <label for="node-input-host"><i class="fa fa-globe"></i> Host</label>
+        <input type="text" id="node-input-host" placeholder="Host">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-globe"></i> Port</label>
+        <input type="text" id="node-input-port" placeholder="Port">
+    </div>
+    <div class="form-row">
+        <label for="node-input-frontend"><i class="icon-tasks"></i> Frontend</label>
+        <input type="text" id="node-input-frontend" placeholder="Frontend">
+    </div>
+    <div class="form-row">
+        <label for="node-input-call"><i class="icon-tasks"></i> REST call</label>
+        <input type="text" id="node-input-call" placeholder="REST call">
+    </div>
+    <div class="form-row">
+        <label for="node-input-params"><i class="icon-tasks"></i> Call params</label>
+        <input type="text" id="node-input-params" placeholder="Call params">
+    </div>
+
+    <br/>
+    <!-- By convention, most nodes have a 'name' property. The following div -->
+    <!-- provides the necessary field. Should always be the last option      -->
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+
+<!-- Next, some simple help text is provided for the node.                   -->
+<script type="text/x-red" data-help-name="integreen in">
+   <!-- data-help-name identifies the node type this help is for             -->
+   <!-- This content appears in the Info sidebar when a node is selected     -->
+   <!-- The first <p> is used as the pop-up tool tip when hovering over a    -->
+   <!-- node in the palette.                                                 -->
+    <p>InTeGreen input node. Use this node to gather ITS (Intelligent Traffic
+    System) data. More informations <a href="http://www.integreen-life.bz.it/">here</a>.</p>
+    <p>The <em>Frontend</em>, <em>Call</em> and <em>Call params</em> parameters
+    can also be assigned dynamically by leaving them empty in the configuration
+    form and providing apposite <em>frontend</em>, <em>call</em> and/or
+    <em>params</em> parameters on <em>msg</em>. <em>msg.params</em> can
+    either be a URI-encoded HTTP string (<it>param=value&...</it>) or a plain
+    object without encoding ({"param": "value", ...}).
+</script>
+
+<!-- Finally, the node type is registered along with all of its properties   -->
+<!-- The example below shows a small subset of the properties that can be set-->
+<script type="text/javascript">
+    RED.nodes.registerType('integreen in',{
+        category: 'storage-input',      // the palette category
+        color:"#A9D0F5",
+        defaults: {             // defines the editable properties of the node
+            name: {value:""},   //  along with default values.
+            // InTeGreen here at Bz
+            host: {value:"ipchannels.integreen-life.bz.it", required:true},
+            port: {value:"80", required:true},
+            frontend: {value:"MeteoFrontEnd"},
+            call: {value:"get-station-details"},
+            params: {value:""}
+        },
+        inputs:1,               // set the number of inputs - only 0 or 1
+        outputs:1,              // set the number of outputs - 0 to n
+        // set the icon (held in icons dir below where you save the node)
+        icon: "integreen.png",     // saved in  icons/myicon.png
+        label: function() {     // sets the default label contents
+            return this.name||"InTeGreen";
+        },
+        labelStyle: function() { // sets the class to apply to the label
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
