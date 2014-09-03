@@ -121,10 +121,18 @@ module.exports = function(RED) {
                 this.channel = msg.channel;
             }
 
+            // inherit "lastUpdate" from msg if present
+            var lastUpdate;
+            if (typeof(msg.lastUpdate) != "undefined") {
+                lastUpdate = msg.lastUpdate;
+            } else {
+                lastUpdate = Math.round(new Date().getTime() / 1000);
+            }
+
             var sensor_value = msg.payload;
             var post_data = {
                 'channels': {},
-                'lastUpdate': Math.round(new Date().getTime() / 1000)
+                'lastUpdate': lastUpdate
             };
             post_data['channels'][this.channel] = {};
             post_data['channels'][this.channel]['current-value'] = sensor_value;
