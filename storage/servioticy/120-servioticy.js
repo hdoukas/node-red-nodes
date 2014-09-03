@@ -65,8 +65,10 @@ module.exports = function(RED) {
 
                 res.on('data', function (chunk) {
                     //console.log('Response: ' + chunk);
-                    var channel = this.channel;
-                    var result = JSON.parse(chunk);
+                    var result;
+                    try {
+                        result = JSON.parse(chunk);
+                    } catch (e) { node.log(e+"\n"+result); }
                     //console.log(chunk);
                     
                     //console.log(result["data"][0]["channels"]);
