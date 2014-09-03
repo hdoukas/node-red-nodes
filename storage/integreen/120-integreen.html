@@ -72,7 +72,9 @@
     <p>The <em>Frontend</em>, <em>Call</em> and <em>Call params</em> parameters
     can also be assigned dynamically by leaving them empty in the configuration
     form and providing apposite <em>frontend</em>, <em>call</em> and/or
-    <em>params</em> parameters on <me>msg</em>.</p>
+    <em>params</em> parameters on <em>msg</em>. <em>msg.params</em> can
+    either be a URI-encoded HTTP string (<it>param=value&...</it>) or a plain
+    object without encoding ({"param": "value", ...}).
 </script>
 
 <!-- Finally, the node type is registered along with all of its properties   -->

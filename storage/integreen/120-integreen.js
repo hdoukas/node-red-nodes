@@ -49,6 +49,12 @@ module.exports = function(RED) {
             if (this.params == "" && typeof(msg.params) == "string") {
                 this.params = msg.params;
             }
+            // also support parameters map
+            if (this.params == "" && typeof(msg.params) == "object") {
+                for (var param in msg.params) {
+                    this.params += encodeURIComponent(param) + "=" + encodeURIComponent(msg.params[param]) + "&";
+                }
+            }
 
             // compute request
             this.req = "/"+this.frontend+"/rest/"+this.call;
