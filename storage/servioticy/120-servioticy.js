@@ -64,21 +64,25 @@ module.exports = function(RED) {
                 res.setEncoding('utf8');
 
                 res.on('data', function (chunk) {
+                    var msg = {};
                     //console.log('Response: ' + chunk);
                     var result;
                     try {
                         result = JSON.parse(chunk);
+
+                        if ("message" in result) {
+                            node.log(result.message);
+                            msg.payload = result;
+                        } else {
+                            var channels = result["data"][0]["channels"];
+                            //console.log(channels);
+                            var value = channels[node.channel]["current-value"];
+                            var lastUpdate = result["data"][0]["lastUpdate"];
+                            msg.payload = value;
+                            msg.lastUpdate = lastUpdate;
+                        }
                     } catch (e) { node.log(e+"\n"+result); }
-                    //console.log(chunk);
-                    
-                    //console.log(result["data"][0]["channels"]);
-                    //var name = ''+result["data"][0]["channels"];
-                    //console.log(name);
-                    var value = result["data"][0]["channels"][node.channel]['current-value'];
-                    var lastUpdate = result["data"][0]["lastUpdate"];
-                    var msg = {};
-                    msg.payload = value;
-                    msg.lastUpdate = lastUpdate;
+
                     node.send(msg);
                 });
             });
@@ -157,9 +161,20 @@ module.exports = function(RED) {
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
                 res.on('data', function (chunk) {
-                    //console.log('Response: ' + chunk);
                     var msg = {};
-                    msg.payload = chunk;
+                    //console.log('Response: ' + chunk);
+                    var result;
+                    try {
+                        result = JSON.parse(chunk);
+
+                        if ("message" in result) {
+                            node.log(result.message);
+                            msg.payload = result;
+                        } else {
+                            msg.payload = result;
+                        }
+                    } catch (e) { node.log(e+"\n"+result); }
+
                     node.send(msg);
                 });
             });
