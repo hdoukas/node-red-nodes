@@ -59,7 +59,6 @@ module.exports = function(RED) {
                 }
             };
 
-            
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
 
@@ -87,6 +86,13 @@ module.exports = function(RED) {
                 });
             });
 
+            post_req.on("error", function(e) {
+                //node.error(e);
+                msg.rc = 503;
+                msg.payload = e;
+                node.send(msg);
+            });
+
             // post the data
             post_req.write('');
             post_req.end();
@@ -94,8 +100,7 @@ module.exports = function(RED) {
         });
 
         this.on("close", function() {
-        }); 
-        
+        });
     }
 
     function ServioticyWriteNode(n) {
@@ -157,7 +162,6 @@ module.exports = function(RED) {
                 }
             };
 
-            
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
                 res.on('data', function (chunk) {
@@ -177,13 +181,24 @@ module.exports = function(RED) {
 
                     node.send(msg);
                 });
+                res.on("error", function(e) {
+                    //node.error(e);
+                    msg.rc = 503;
+                    msg.payload = e;
+                    node.send(msg);
+                });
+            });
+
+            post_req.on("error", function(e) {
+                //node.error(e);
+                msg.rc = 503;
+                msg.payload = e;
+                node.send(msg);
             });
 
             // post the data
             post_req.write(post_data);
             post_req.end();
-
-
         });
 
         this.on("close", function() {
