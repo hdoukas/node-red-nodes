@@ -116,7 +116,12 @@ function HueNode(n) {
 
                         //case of ON:
                         if(myMsg.payload=="ON" || myMsg.payload=="on") {
-                            api.setLightState(lamp, state.on().rgb(hexToRgb(color).r,hexToRgb(color).g,hexToRgb(color).b).brightness(brightness)).then(displayResult).fail(displayError).done();
+                            var rgb = hexToRgb(color);
+                            if (rgb != null) {
+                                api.setLightState(lamp, state.on().rgb(rgb.r,rgb.g,rgb.b).brightness(brightness)).then(displayResult).fail(displayError).done();
+                            } else {
+                                displayError("RGB value " + color + " could not be parsed!");
+                            }
                         }
                         else {
                             api.setLightState(lamp, state.off()).then(displayResult).fail(displayError).done();
@@ -125,10 +130,16 @@ function HueNode(n) {
                     }
                     else {
                         //set lamp according to node settings
-                        if(node.lamp_status=="ON") 
-                             api.setLightState(node.lamp_id, state.on().rgb(hexToRgb(node.color).r,hexToRgb(node.color).g,hexToRgb(node.color).b).brightness(node.brightness)).then(displayResult).fail(displayError).done();
-                        else
+                        if (node.lamp_status=="ON") {
+                            var rgb = hexToRgb(color);
+                            if (rgb != null) {
+                                api.setLightState(node.lamp_id, state.on().rgb(rgb.r,rgb.g,rgb.b).brightness(node.brightness)).then(displayResult).fail(displayError).done();
+                            } else {
+                                displayError("RGB value " + color + " could not be parsed!");
+                            }
+                        } else {
                             api.setLightState(node.lamp_id, state.off()).then(displayResult).fail(displayError).done();
+                        }
                     }
 
                     if(lamp!=-1)
