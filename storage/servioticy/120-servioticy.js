@@ -1,22 +1,18 @@
 /**
-* pusher.js
-* Subscription module for the Pusher service (www.pusher.com)
-* Requires 'pusher' and 'pusher-client' modules.
-*
-* Copyright 2014 Charalampos Doukas, @BuildingIoT
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-**/
+ * Copyright 2014 Charalampos Doukas, @BuildingIoT
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
 module.exports = function(RED) {
     "use strict";
 
@@ -63,26 +59,38 @@ module.exports = function(RED) {
                 }
             };
 
-            
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
 
                 res.on('data', function (chunk) {
-                    //console.log('Response: ' + chunk);
-                    var channel = this.channel;
-                    var result = JSON.parse(chunk);
-                    //console.log(chunk);
-                    
-                    //console.log(result["data"][0]["channels"]);
-                    //var name = ''+result["data"][0]["channels"];
-                    //console.log(name);
-                    var value = result["data"][0]["channels"][node.channel]['current-value'];
-                    var lastUpdate = result["data"][0]["lastUpdate"];
                     var msg = {};
-                    msg.payload = value;
-                    msg.lastUpdate = lastUpdate;
+                    //console.log('Response: ' + chunk);
+                    var result;
+                    try {
+                        result = JSON.parse(chunk);
+
+                        if ("message" in result) {
+                            node.log(result.message);
+                            msg.payload = result;
+                        } else {
+                            var channels = result["data"][0]["channels"];
+                            //console.log(channels);
+                            var value = channels[node.channel]["current-value"];
+                            var lastUpdate = result["data"][0]["lastUpdate"];
+                            msg.payload = value;
+                            msg.lastUpdate = lastUpdate;
+                        }
+                    } catch (e) { node.log(e+"\n"+result); }
+
                     node.send(msg);
                 });
+            });
+
+            post_req.on("error", function(e) {
+                //node.error(e);
+                msg.rc = 503;
+                msg.payload = e;
+                node.send(msg);
             });
 
             // post the data
@@ -92,8 +100,7 @@ module.exports = function(RED) {
         });
 
         this.on("close", function() {
-        }); 
-        
+        });
     }
 
     function ServioticyWriteNode(n) {
@@ -125,10 +132,18 @@ module.exports = function(RED) {
                 this.channel = msg.channel;
             }
 
+            // inherit "lastUpdate" from msg if present
+            var lastUpdate;
+            if (typeof(msg.lastUpdate) != "undefined") {
+                lastUpdate = msg.lastUpdate;
+            } else {
+                lastUpdate = Math.round(new Date().getTime() / 1000);
+            }
+
             var sensor_value = msg.payload;
             var post_data = {
                 'channels': {},
-                'lastUpdate': Math.round(new Date().getTime() / 1000)
+                'lastUpdate': lastUpdate
             };
             post_data['channels'][this.channel] = {};
             post_data['channels'][this.channel]['current-value'] = sensor_value;
@@ -147,22 +162,43 @@ module.exports = function(RED) {
                 }
             };
 
-            
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
                 res.on('data', function (chunk) {
-                    //console.log('Response: ' + chunk);
                     var msg = {};
-                    msg.payload = chunk;
+                    //console.log('Response: ' + chunk);
+                    var result;
+                    try {
+                        result = JSON.parse(chunk);
+
+                        if ("message" in result) {
+                            node.log(result.message);
+                            msg.payload = result;
+                        } else {
+                            msg.payload = result;
+                        }
+                    } catch (e) { node.log(e+"\n"+result); }
+
                     node.send(msg);
                 });
+                res.on("error", function(e) {
+                    //node.error(e);
+                    msg.rc = 503;
+                    msg.payload = e;
+                    node.send(msg);
+                });
+            });
+
+            post_req.on("error", function(e) {
+                //node.error(e);
+                msg.rc = 503;
+                msg.payload = e;
+                node.send(msg);
             });
 
             // post the data
             post_req.write(post_data);
             post_req.end();
-
-
         });
 
         this.on("close", function() {
