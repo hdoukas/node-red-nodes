@@ -89,13 +89,13 @@ function HueNodeDiscovery(n) {
 
  }
 
- //hue debugging on the output:
- var displayResult = function(result) {
-    console.log(result);
+//hue debugging on the output:
+var displayResult = function(result) {
+    console.log('hue_discover: ' + result);
 };
 
 var displayError = function(err) {
-    console.error(err);
+    console.error('hue_discover: ' + err);
 };
 
 
