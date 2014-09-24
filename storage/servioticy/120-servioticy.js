@@ -171,7 +171,7 @@ module.exports = function(RED) {
                 var buffer = "";
                 res.on('data', function (chunk) {
                     buffer += chunk;
-                }
+                });
                 res.on('end', function () {
                     var msg = {};
                     var result;
