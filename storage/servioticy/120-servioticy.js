@@ -62,12 +62,15 @@ module.exports = function(RED) {
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
 
+                var buffer = "";
                 res.on('data', function (chunk) {
+                    buffer += chunk;
+                });
+                res.on('end', function () {
                     var msg = {};
-                    //console.log('Response: ' + chunk);
                     var result;
                     try {
-                        result = JSON.parse(chunk);
+                        result = JSON.parse(buffer);
 
                         if ("message" in result) {
                             node.log(result.message);
@@ -164,12 +167,16 @@ module.exports = function(RED) {
 
             var post_req = http.request(post_options, function(res) {
                 res.setEncoding('utf8');
+
+                var buffer = "";
                 res.on('data', function (chunk) {
+                    buffer += chunk;
+                }
+                res.on('end', function () {
                     var msg = {};
-                    //console.log('Response: ' + chunk);
                     var result;
                     try {
-                        result = JSON.parse(chunk);
+                        result = JSON.parse(buffer);
 
                         if ("message" in result) {
                             node.log(result.message);
