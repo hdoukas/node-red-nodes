@@ -131,7 +131,7 @@ function HueNode(n) {
                     else {
                         //set lamp according to node settings
                         if (node.lamp_status=="ON") {
-                            var rgb = hexToRgb(color);
+                            var rgb = hexToRgb(node.color);
                             if (rgb != null) {
                                 api.setLightState(node.lamp_id, state.on().rgb(rgb.r,rgb.g,rgb.b).brightness(node.brightness)).then(displayResult).fail(displayError).done();
                             } else {
